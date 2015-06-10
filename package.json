@@ -10,6 +10,7 @@
   },
   "author": "Kyle Robinson Young <kyle@dontkry.com> (http://dontkry.com)",
   "license": "MIT",
+  "repository": "git://github.com/shama/blaster",
   "dependencies": {
     "base-router": "shama/base-router",
     "glob": "^5.0.10",
@@ -23,6 +24,7 @@
   "devDependencies": {
     "base-element": "^3.0.1",
     "browserify": "^10.2.4",
+    "ecstatic": "^0.8.0",
     "marked": "^0.3.3",
     "standard": "^4.0.1",
     "tape": "^4.0.0",
