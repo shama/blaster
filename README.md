@@ -36,6 +36,10 @@ Which will generate the HTML files:
 └── index.html
 ```
 
+From there you can bundle the same router above using whatever tooling you like.
+The static files get served and then the bundled client side code takes over
+routing.
+
 > See the [example folder](https://github.com/shama/blaster/tree/master/example)
 for a more in depth example.
 
