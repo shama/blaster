@@ -53,7 +53,7 @@ there for all available options and methods.
 * `routes` - An object literal of routes to create.
 * `options` - An object literal to configure operation.
 
-### `router.route(name, model)`
+### `blaster.route(name, model)`
 Adds a new route. `name` is the pathname to our route and `model` is a function
 that resolves the data for the route.
 
@@ -63,13 +63,13 @@ router.route('/user/:id', function (params, done) {
 })
 ```
 
-### `router.generate([options])`
+### `blaster.generate([options])`
 Returns a stream of vinyl files for each route.
 
-### `router.generateRoute(route[, options])`
+### `blaster.generateRoute(route[, options])`
 Returns a stream of a vinyl file for the given `route`.
 
-### `router.files(folder[, parseFile])`
+### `blaster.files(folder[, parseFile])`
 Indicates a `folder` with static files to be included. Useful for dynamic
 segments in routes such as `/posts/:slug`.
 
