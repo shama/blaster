@@ -70,6 +70,16 @@ Blaster.prototype.routeToPath = function Blaster_routeToPath (route) {
   return route
 }
 
+Blaster.prototype.context = function Blaster_context (context, parseFile) {
+  if (typeof parseFile !== 'function') {
+    parseFile = function Blaster_parseFile (file, enc, next) {
+      this.push(file)
+      next()
+    }
+  }
+  this._context = [context, parseFile]
+}
+
 Blaster.prototype._toContents = function Blaster_toContents (contents) {
   if (contents instanceof Buffer) {
     return contents
@@ -79,16 +89,6 @@ Blaster.prototype._toContents = function Blaster_toContents (contents) {
   }
   // TODO: Detect if vnode/vtree?
   return new Buffer(toHTML(contents))
-}
-
-Blaster.prototype.context = function Blaster_context (context, parseFile) {
-  if (typeof parseFile !== 'function') {
-    parseFile = function Blaster_parseFile (file, enc, next) {
-      this.push(file)
-      next()
-    }
-  }
-  this._context = [context, parseFile]
 }
 
 Blaster.prototype._renderStatic = function Blaster_renderStatic () {
