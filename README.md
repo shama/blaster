@@ -38,7 +38,7 @@ Which will generate the HTML files:
 └── index.html
 ```
 
-> See the [example folder](https://github.com/shama/blaster/tree/master/examples)
+> See the [example folder](https://github.com/shama/blaster/tree/master/example)
 for a more in depth example.
 
 ## api
