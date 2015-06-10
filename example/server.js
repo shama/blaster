@@ -1,10 +1,15 @@
 var path = require('path')
+var fs = require('fs')
 
 var vfs = require('vinyl-fs')
 var browserify = require('browserify')
 var marked = require('marked')
-var yfm = require('yfm')
 var through = require('through2')
+var toHTML = require('vdom-to-html')
+var convertHTML = require('html-to-vdom')({
+  VNode: require('virtual-dom/vnode/vnode'),
+  VText: require('virtual-dom/vnode/vtext')
+})
 
 var app = require('./app.js')()
 
@@ -15,7 +20,10 @@ app.router.route('/bundle.js', function (params, done) {
   b.bundle(done)
 })
 app.router.route('/style.css', function (params, done) {
-  return 'body { background-color: red; }'
+  fs.readFile(path.resolve(__dirname, 'style.css'), function (err, file) {
+    if (err) return done(err)
+    done(null, file.toString())
+  })
 })
 
 // Specify the context of this router
@@ -23,7 +31,9 @@ app.router.route('/style.css', function (params, done) {
 app.router.context(path.resolve(__dirname, 'src'), function (file, enc, next) {
   // Such as renaming and converting markdown
   file.path = file.path.slice(0, -3)
-  file.contents = new Buffer(marked(file.contents.toString()))
+  var contents = convertHTML('<div>' + marked(file.contents.toString()) + '</div>')
+  contents = toHTML(app.layout(contents))
+  file.contents = new Buffer(contents)
   this.push(file)
   next()
 })
@@ -34,6 +44,9 @@ app.router.generate()
     if (path.extname(file.path) === app.router.ext) {
       file.contents = new Buffer([
         '<html>',
+        '<head>',
+        '<link rel="stylesheet" href="/style.css" type="text/css" media="screen" charset="utf-8">',
+        '</head>',
         '<body>',
         file.contents,
         '<script src="/bundle.js"></script>',

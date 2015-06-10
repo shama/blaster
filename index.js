@@ -9,9 +9,6 @@ var File = require('vinyl')
 var toHTML = require('vdom-to-html')
 var glob = require('glob')
 var fs = require('fs')
-var xtend = require('xtend')
-
-function noop (contents) { return contents }
 
 function Blaster (routes, opts) {
   if (!(this instanceof Blaster)) return new Blaster(routes, opts)
@@ -20,9 +17,7 @@ function Blaster (routes, opts) {
   opts = opts || {}
   this.ext = opts.ext || '.html'
   this.validateRoute = opts.validateRoute || /\:|\(\|/
-  this.layoutName = opts.layoutName || 'layout'
-  this._layoutFn = noop
-  this._routes = Object.create(null)
+  this._routes = []
   this._context = null
   if (routes) {
     Object.keys(routes).forEach(function Blaster_forEachRoutes (key) {
@@ -32,25 +27,21 @@ function Blaster (routes, opts) {
 }
 inherts(Blaster, BaseRouter)
 
-Blaster.prototype.route = function Blaster_route (route, fn, opts) {
+Blaster.prototype.route = function Blaster_route (route, fn) {
   var model = function () {
     var args = Array.prototype.slice.call(arguments)
     return fn.apply(fn, args)
   }
-  if (route === this.layoutName) {
-    this._layoutFn = fn
-    return
-  }
-  this._routes[route] = opts
+  this._routes.push(route)
   return BaseRouter.prototype.route.call(this, route, model.bind(this))
 }
 
 Blaster.prototype.generate = function Blaster_generate (opts) {
   var self = this
   var stream = ms()
-  Object.keys(this._routes).forEach(function (route) {
+  this._routes.forEach(function (route) {
     if (self.validateRoute.test(route)) return
-    stream.add(self.generateRoute(route, xtend({}, opts, self._routes[route])))
+    stream.add(self.generateRoute(route, opts))
   })
   stream.add(this._renderStatic())
   return stream
@@ -60,17 +51,13 @@ Blaster.prototype.generateRoute = function Blaster_generateRoute (route, opts) {
   var self = this
   opts = opts || {}
   opts.routeToPath = opts.routeToPath || this.routeToPath.bind(this)
-  opts.toHTML = opts.toHTML || this.toHTML.bind(this)
-  var layout = this._getLayout()
   var stream = through.obj()
-  this.transitionTo(route, function (err, contents) {
+  this.transitionTo(route, function Blaster_transitionTo (err, contents) {
+    if (err) return stream.emit('error', err)
     var file = new File({
       path: opts.routeToPath(route),
-      contents: opts.toHTML(contents)
+      contents: self._toContents(contents)
     })
-    if (path.extname(file.path) === self.ext) {
-      file.contents = layout(file.contents)
-    }
     stream.end(file)
   })
   return stream
@@ -83,7 +70,7 @@ Blaster.prototype.routeToPath = function Blaster_routeToPath (route) {
   return route
 }
 
-Blaster.prototype.toHTML = function Blaster_toHTML (contents) {
+Blaster.prototype._toContents = function Blaster_toContents (contents) {
   if (contents instanceof Buffer) {
     return contents
   }
@@ -94,9 +81,9 @@ Blaster.prototype.toHTML = function Blaster_toHTML (contents) {
   return new Buffer(toHTML(contents))
 }
 
-Blaster.prototype.context = function (context, parseFile) {
+Blaster.prototype.context = function Blaster_context (context, parseFile) {
   if (typeof parseFile !== 'function') {
-    parseFile = function (file, enc, next) {
+    parseFile = function Blaster_parseFile (file, enc, next) {
       this.push(file)
       next()
     }
@@ -104,13 +91,12 @@ Blaster.prototype.context = function (context, parseFile) {
   this._context = [context, parseFile]
 }
 
-Blaster.prototype._renderStatic = function () {
-  var self = this
+Blaster.prototype._renderStatic = function Blaster_renderStatic () {
   if (!this._context) return through.obj()
-  var layout = this._getLayout()
   var stream = through.obj(this._context[1])
   var cwd = this._context[0]
-  glob('**/*', { cwd: cwd, nodir: true }, function (err, files) {
+  glob('**/*', { cwd: cwd, nodir: true }, function Blaster_glob (err, files) {
+    if (err) return stream.emit('error', err)
     var len = files.length
     files.forEach(function (filepath) {
       readFile(filepath, function () {
@@ -120,7 +106,7 @@ Blaster.prototype._renderStatic = function () {
     })
   })
   function readFile (filepath, next) {
-    fs.readFile(path.resolve(cwd, filepath), function (err, src) {
+    fs.readFile(path.resolve(cwd, filepath), function Blaster_readFile (err, src) {
       if (err) return stream.emit('error', err)
       stream.write(new File({
         path: filepath,
@@ -129,22 +115,5 @@ Blaster.prototype._renderStatic = function () {
       next()
     })
   }
-  return stream.pipe(through.obj(function (file, enc, next) {
-    if (path.extname(file.path) === self.ext) {
-      file.contents = layout(file.contents)
-    }
-    this.push(file)
-    next()
-  }))
-}
-
-Blaster.prototype._getLayout = function (opts) {
-  opts = opts || {}
-  if (opts.layout === false) {
-    return noop
-  }
-  var layout = (typeof opts.layout === 'function') ? opts.layout : this._layoutFn
-  return function (contents) {
-    return new Buffer(layout(contents.toString()))
-  }
+  return stream
 }

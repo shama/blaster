@@ -1,12 +1,16 @@
 var app = require('./app.js')(document.body)
 
+// Clear out existing app if one rendered server side
+var existing = document.querySelector('.app')
+if (existing.parentNode) existing.parentNode.removeChild(existing)
+
+// Main render
 app.router.on('transition', function (route, content) {
-  console.log('transition to', route)
-  app.render(function () {
-    return this.html('.container', content)
-  })
+  app.render(content)
 })
 
-// Clear out static and start it up
-// document.body.innerHTML = ''
-// app.router.transitionTo(location.hash)
+// Initial render
+app.render(app.html('.loading', 'Loading...'))
+
+// Default browser side route
+app.router.transitionTo(document.location.pathname)

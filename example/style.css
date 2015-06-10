@@ -1,0 +1,19 @@
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+}
+nav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  background-color: #333;
+  padding: .5em;
+}
+nav a {
+  color: #fff;
+  padding: .3em 1em;
+}
+.app {
+  padding: 3em 1em;
+}

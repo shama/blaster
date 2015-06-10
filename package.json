@@ -5,17 +5,18 @@
   "main": "index.js",
   "scripts": {
     "start": "ecstatic --root ./dist",
-    "build": "node example/server.js"
+    "build": "node example/server.js",
+    "test": "standard"
   },
   "author": "Kyle Robinson Young <kyle@dontkry.com> (http://dontkry.com)",
   "license": "MIT",
   "dependencies": {
     "base-router": "shama/base-router",
     "glob": "^5.0.10",
+    "html-to-vdom": "^0.5.5",
     "inherits": "^2.0.1",
     "merge-stream": "^0.1.7",
     "through2": "^0.6.5",
-    "vdom-to-html": "^2.1.1",
     "vinyl": "^0.5.0",
     "xtend": "^4.0.0"
   },
@@ -24,7 +25,8 @@
     "browserify": "^10.2.4",
     "marked": "^0.3.3",
     "standard": "^4.0.1",
-    "vinyl-fs": "^1.0.0",
-    "yfm": "^0.2.0"
+    "vdom-to-html": "^2.1.1",
+    "virtual-dom": "^2.0.1",
+    "vinyl-fs": "^1.0.0"
   }
 }
