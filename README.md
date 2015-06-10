@@ -5,8 +5,6 @@ A router for generating a static site that can turn into a single page app.
 [![NPM version](https://badge.fury.io/js/blaster.svg)](https://badge.fury.io/js/blaster)
 [![experimental](http://hughsk.github.io/stability-badges/dist/experimental.svg)](http://github.com/hughsk/stability-badges)
 
-[![Sauce Test Status](https://saucelabs.com/browser-matrix/shama.svg)](https://saucelabs.com/u/shama)
-
 ## example
 
 ```js
