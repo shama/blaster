@@ -3,42 +3,40 @@ var path = require('path')
 var test = require('tape')
 
 test('generate routes', function (t) {
-  t.plan(6)
+  t.plan(3)
   var router = new Blaster({
     '/': function () { return 'index' },
     '/about.html': function (params, done) { done(null, 'about') },
     '/bundle.js': function () { return 'var test = true' }
   })
   streamContains(router.generate(), function (result) {
-    t.equal(result[0].path, 'index.html')
-    t.equal(result[0].contents.toString(), 'index')
-    t.equal(result[1].path, 'about.html')
-    t.equal(result[1].contents.toString(), 'about')
-    t.equal(result[2].path, 'bundle.js')
-    t.equal(result[2].contents.toString(), 'var test = true')
+    t.equal(result['index.html'], 'index')
+    t.equal(result['about.html'], 'about')
+    t.equal(result['bundle.js'], 'var test = true')
     t.end()
   })
 })
 
 test('specify files', function (t) {
-  t.plan(6)
+  t.plan(3)
   var router = new Blaster({
     '/': function () { return 'index' }
   })
   router.files(path.resolve(__dirname, 'fixtures'))
   streamContains(router.generate(), function (result) {
-    t.equal(result[0].path, 'index.html')
-    t.equal(result[0].contents.toString(), 'index')
-    t.equal(result[1].path, 'posts.html')
-    t.equal(result[1].contents.toString(), 'posts\n')
-    t.equal(result[2].path, 'posts/one.html')
-    t.equal(result[2].contents.toString(), 'one\n')
+    t.equal(result['index.html'], 'index')
+    t.equal(result['posts.html'], 'posts\n')
+    t.equal(result['posts/one.html'], 'one\n')
     t.end()
   })
 })
 
 function streamContains (stream, done) {
-  var result = []
-  stream.on('data', function (file) { result.push(file) })
-  stream.on('end', function () { done(result) })
+  var result = Object.create(null)
+  stream.on('data', function (file) {
+    result[file.path] = file.contents.toString()
+  })
+  stream.on('end', function () {
+    done(result)
+  })
 }
