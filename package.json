@@ -28,5 +28,12 @@
     "vdom-to-html": "^2.1.1",
     "virtual-dom": "^2.0.1",
     "vinyl-fs": "^1.0.0"
-  }
+  },
+  "keywords": [
+    "virtual",
+    "dom",
+    "static",
+    "site",
+    "generator"
+  ]
 }

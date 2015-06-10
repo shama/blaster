@@ -7,6 +7,8 @@ var through = require('through2')
 var ms = require('merge-stream')
 var File = require('vinyl')
 var toHTML = require('vdom-to-html')
+
+// TODO: Separate browser/server deps to lessen the weight
 var glob = require('glob')
 var fs = require('fs')
 
