@@ -1,7 +1,6 @@
 var Blaster = require('../index.js')
 var path = require('path')
 var test = require('tape')
-var through = require('through2')
 
 test('generate routes', function (t) {
   t.plan(6)
@@ -24,7 +23,7 @@ test('generate routes', function (t) {
 test('specify files', function (t) {
   t.plan(6)
   var router = new Blaster({
-    '/': function () { return 'index' },
+    '/': function () { return 'index' }
   })
   router.files(path.resolve(__dirname, 'fixtures'))
   streamContains(router.generate(), function (result) {
