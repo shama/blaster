@@ -67,14 +67,14 @@ Returns a stream of vinyl files for each route.
 ### `router.generateRoute(route[, options])`
 Returns a stream of a vinyl file for the given `route`.
 
-### `router.context(folder[, parseFile])`
+### `router.files(folder[, parseFile])`
 Indicates a `folder` with static files to be included. Useful for dynamic
 segments in routes such as `/posts/:slug`.
 
 `parseFile` is an optional callback to parse the files as they stream:
 
 ```js
-router.context('./markdown-files/', function (file, enc, next) {
+router.files('./markdown-files/', function (file, enc, next) {
   file.contents = marked(file.contents)
   this.push(file)
   next()

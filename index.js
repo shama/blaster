@@ -20,7 +20,7 @@ function Blaster (routes, opts) {
   this.ext = opts.ext || '.html'
   this.validateRoute = opts.validateRoute || /\:|\(\|/
   this._routes = []
-  this._context = null
+  this._files = null
   if (routes) {
     Object.keys(routes).forEach(function Blaster_forEachRoutes (key) {
       self.route(key, routes[key])
@@ -41,11 +41,27 @@ Blaster.prototype.route = function Blaster_route (route, fn) {
 Blaster.prototype.generate = function Blaster_generate (opts) {
   var self = this
   var stream = ms()
+  var s = null
+  var count = 0
+  function done () {
+    process.nextTick(function () {
+      count--
+      if (count < 1) stream.end()
+    })
+  }
   this._routes.forEach(function (route) {
     if (self.validateRoute.test(route)) return
-    stream.add(self.generateRoute(route, opts))
+    s = self.generateRoute(route, opts)
+    s.on('end', done)
+    stream.add(s)
+    count++
   })
-  stream.add(this._renderStatic())
+  s = this._renderStatic()
+  if (s) {
+    s.on('end', done)
+    stream.add(s)
+    count++
+  }
   return stream
 }
 
@@ -72,14 +88,15 @@ Blaster.prototype.routeToPath = function Blaster_routeToPath (route) {
   return route
 }
 
-Blaster.prototype.context = function Blaster_context (context, parseFile) {
+// TODO: Can specify multiple files locations?
+Blaster.prototype.files = function Blaster_context (context, parseFile) {
   if (typeof parseFile !== 'function') {
     parseFile = function Blaster_parseFile (file, enc, next) {
       this.push(file)
       next()
     }
   }
-  this._context = [context, parseFile]
+  this._files = [context, parseFile]
 }
 
 Blaster.prototype._toContents = function Blaster_toContents (contents) {
@@ -94,16 +111,16 @@ Blaster.prototype._toContents = function Blaster_toContents (contents) {
 }
 
 Blaster.prototype._renderStatic = function Blaster_renderStatic () {
-  if (!this._context) return through.obj()
-  var stream = through.obj(this._context[1])
-  var cwd = this._context[0]
+  if (!this._files) return false
+  var stream = through.obj(this._files[1])
+  var cwd = this._files[0]
   glob('**/*', { cwd: cwd, nodir: true }, function Blaster_glob (err, files) {
     if (err) return stream.emit('error', err)
     var len = files.length
     files.forEach(function (filepath) {
       readFile(filepath, function () {
         len--
-        if (len < 0) stream.end()
+        if (len < 1) stream.end()
       })
     })
   })

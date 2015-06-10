@@ -31,7 +31,7 @@ app.router.route('/style.css', function (params, done) {
 
 // Specify the context of this router
 // Also can parse files as they are written
-app.router.context(path.resolve(__dirname, 'src'), function (file, enc, next) {
+app.router.files(path.resolve(__dirname, 'src'), function (file, enc, next) {
   // Such as renaming and converting markdown
   file.path = file.path.slice(0, -3)
   var contents = convertHTML('<div>' + marked(file.contents.toString()) + '</div>')
