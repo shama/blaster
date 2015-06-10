@@ -1,3 +1,6 @@
+// Main App
+// This runs on the browser/server and where the actual app gets started
+
 module.exports = App
 
 var Router = require('../index.js')

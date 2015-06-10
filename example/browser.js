@@ -1,3 +1,6 @@
+// This runs only on the browser
+// Used for startup type things
+
 var app = require('./app.js')(document.body)
 
 // Clear out existing app if one rendered server side

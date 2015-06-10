@@ -1,7 +1,7 @@
 {
   "name": "blaster",
   "version": "0.1.0",
-  "description": "",
+  "description": "A tool for generating a static site that can turn into a single page app.",
   "main": "index.js",
   "scripts": {
     "start": "ecstatic --root ./dist",

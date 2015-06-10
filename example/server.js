@@ -1,3 +1,6 @@
+// This runs only on the server
+// Used to generate static pages
+
 var path = require('path')
 var fs = require('fs')
 
