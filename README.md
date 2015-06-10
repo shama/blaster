@@ -19,7 +19,7 @@ var router = new Router({
       return this.html('button', 'click me')
     })
   },
-  '/about': function (params, done) {
+  '/about.html': function (params, done) {
     done(null, '<strong>about page</strong>')
   }
 })
