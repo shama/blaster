@@ -26,7 +26,7 @@ App.prototype.layout = function (content) {
   return h('.app', [
     h('nav', [
       h('a', { href: '/', onclick: onclick }, 'home'),
-      h('a', { href: '/posts/one', onclick: onclick }, 'posts/one'),
+      h('a', { href: '/posts/one.html', onclick: onclick }, 'posts/one'),
       h('a', { href: '/about.html', onclick: onclick }, 'about')
     ]),
     content

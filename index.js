@@ -82,9 +82,8 @@ Blaster.prototype.generateRoute = function Blaster_generateRoute (route, opts) {
 }
 
 Blaster.prototype.routeToPath = function Blaster_routeToPath (route) {
-  if (route === '/') route = 'index'
+  if (route === '/') route = 'index' + this.ext
   if (route.slice(0, 1) === '/') route = route.slice(1)
-  if (path.extname(route) === '') route += this.ext
   return route
 }
 
