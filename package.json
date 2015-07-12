@@ -13,7 +13,7 @@
   "license": "MIT",
   "repository": "git://github.com/shama/blaster",
   "dependencies": {
-    "base-router": "shama/base-router",
+    "base-router": "^1.1.0",
     "glob": "^5.0.10",
     "html-to-vdom": "^0.5.5",
     "inherits": "^2.0.1",

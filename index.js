@@ -23,19 +23,25 @@ function Blaster (routes, opts) {
   this._files = null
   if (routes) {
     Object.keys(routes).forEach(function Blaster_forEachRoutes (key) {
-      self.route(key, routes[key])
+      self.addRoute(key, routes[key])
     })
   }
 }
 inherts(Blaster, BaseRouter)
 
-Blaster.prototype.route = function Blaster_route (route, fn) {
+// Deprecated. Use Blaster.prototype.addRoute instead
+Router.prototype.route = function Blaster_route (name, model) {
+  console.warn('Router.route is deprecated and will be removed in version 2.0. Please use Router.addRoute instead.')
+  this.addRoute(name, model)
+}
+
+Blaster.prototype.addRoute = function Blaster_addRoute (route, fn) {
   var model = function () {
     var args = Array.prototype.slice.call(arguments)
     return fn.apply(fn, args)
   }
   this._routes.push(route)
-  return BaseRouter.prototype.route.call(this, route, model.bind(this))
+  return BaseRouter.prototype.addRoute.call(this, route, model.bind(this))
 }
 
 Blaster.prototype.generate = function Blaster_generate (opts) {
