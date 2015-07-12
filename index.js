@@ -30,8 +30,8 @@ function Blaster (routes, opts) {
 inherts(Blaster, BaseRouter)
 
 // Deprecated. Use Blaster.prototype.addRoute instead
-Router.prototype.route = function Blaster_route (name, model) {
-  console.warn('Router.route is deprecated and will be removed in version 2.0. Please use Router.addRoute instead.')
+Blaster.prototype.route = function Blaster_route (name, model) {
+  console.warn('Blaster.route is deprecated and will be removed in version 2.0. Please use Router.addRoute instead.')
   this.addRoute(name, model)
 }
 
