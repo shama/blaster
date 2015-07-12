@@ -53,12 +53,12 @@ there for all available options and methods.
 * `routes` - An object literal of routes to create.
 * `options` - An object literal to configure operation.
 
-### `blaster.route(name, model)`
+### `blaster.addRoute(name, model)`
 Adds a new route. `name` is the pathname to our route and `model` is a function
 that resolves the data for the route.
 
 ```js
-router.route('/user/:id', function (params, done) {
+router.addRoute('/user/:id', function (params, done) {
   done(null, params.id)
 })
 ```
